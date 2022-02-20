@@ -43,51 +43,25 @@
 
 <script>
 import { useField, useForm } from 'vee-validate'
+import { object, string, number, boolean } from 'yup'
 export default {
   data() {
     return { categories: ['sustainability', 'nature', 'animal welfare', 'housing', 'education', 'food', 'community'] }
   },
   setup() {
-    const required = value => {
-      const requiredMessage = 'This field is required'
-      if (value === undefined || value === null) return requiredMessage
-      if (!String(value).length) return requiredMessage
-
-      return true
-    }
-
-    const minLength = (number, value) => {
-      if (String(value).length < number) {
-        return 'Please type at least ' + number + ' characters'
-      }
-
-      return true
-    }
-
-    const anything = () => {
-      // for fields that don't require validation
-      return true
-    }
-
-    const validationSchema = {
-      category: required,
-      title: value => {
-        const req = required(value)
-        if (req !== true) {
-          return req
-        }
-        const min = minLength(3, value)
-        if (min !== true) {
-          return min
-        }
-        return true
-      },
-      description: required,
-      location: undefined,
-      pets: anything,
-      catering: anything,
-      music: anything
-    }
+    const validationSchema = object({
+      category: string().required(),
+      title: string()
+        .required('A cool title is required')
+        .min(3),
+      description: string().required(),
+      // the 4 below check that the data type is valid
+      // we could use undefined for these fields because they don't need validation
+      location: string(),
+      pets: number(),
+      catering: boolean(),
+      music: boolean()
+    })
 
     const { handleSubmit, errors } = useForm({
       validationSchema,
