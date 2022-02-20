@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <BaseInput label="Email" type="email" v-model="email" :error="emailError" />
+    <BaseInput label="Email" type="email" :error="emailError" :modelValue="email" @change="handleChange" />
 
     <BaseInput label="Password" type="password" v-model="password" :error="passwordError" />
 
@@ -41,15 +41,26 @@ export default {
     }
     useForm({ validationSchema: validations })
 
-    const { value: email, errorMessage: emailError } = useField('email')
+    // when multiple fields require lazy validation, use this
+    // const { setFieldValue } = useForm({
+    //   validationSchema: validations
+    // })
+
+    const { value: email, errorMessage: emailError, handleChange } = useField('email')
     const { value: password, errorMessage: passwordError } = useField('password')
+
+    // when multiple fields require lazy validation, use this
+    // const handleChange = event => {
+    //   setFieldValue('email', event.target.value)
+    // }
 
     return {
       onSubmit,
       email,
       emailError,
       password,
-      passwordError
+      passwordError,
+      handleChange
     }
   }
 }
